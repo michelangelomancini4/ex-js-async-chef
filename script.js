@@ -54,7 +54,7 @@ async function getChefBirthday(id) {
     try {
 
         const birthday = await getChefBirthday(4);
-        console.log("Data di nascita dello Chef:", birthday);
+        console.log("Data di nascita dello Chef:", dayjs(birthday).format('DD/MM/YYYY'));
 
     } catch (error) {
 
