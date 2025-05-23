@@ -1,23 +1,51 @@
 async function getChefBirthday(id) {
 
-    // chiamata per ottenere la ricetta specifica
-    const recipes = await fetch(`https://dummyjson.com/recipes/${id}`);
-    const dataRecipes = await recipes.json();
+    let dataRecipes;
 
-    // mostro in console la ricetta
-    console.log("Nome ricetta:", dataRecipes.name);
+    try {
+
+        // chiamata per ottenere la ricetta specifica
+        const recipes = await fetch(`https://dummyjson.com/recipes/${id}`);
+
+        // controllo se esiste una ricetta con l'id inserito
+        if (!recipes.ok) {
+            throw new Error(`Ricetta con ID ${id} non trovata `);
+        }
+
+        dataRecipes = await recipes.json();
+
+        // mostro in console la ricetta
+        console.log("Nome ricetta:", dataRecipes.name);
+        console.log(dataRecipes);
 
 
-    // chiamata per ottenere l'id dell'user 
-    const userId = await fetch(`https://dummyjson.com/users/${dataRecipes.userId}`);
-    const user = await userId.json();
+    } catch (error) {
+        throw new Error("Ricetta non trovata!");
 
-    // mostro in console il nome dello chef
-    console.log("Nome Chef:", user.firstName, user.lastName);
+    }
 
 
-    // ritorno la data di nascita dell'user (Output prncipale)
-    return user.birthDate;
+    try {
+        // chiamata per ottenere l'id dell'user 
+        const userResponse = await fetch(`https://dummyjson.com/users/${dataRecipes.userId}`);
+
+        // controllo se esiste uno chef con l'id corrispondente
+        if (!userResponse.ok) {
+            throw new Error(`Chef con ID ${id} non trovato `);
+        }
+
+        const user = await userResponse.json();
+
+        console.log("Nome Chef:", user.firstName, user.lastName);
+
+
+        // ritorno la data di nascita dell'user
+        return user.birthDate;
+
+    } catch (error) {
+        throw new Error("Chef non trovato!");
+
+    }
 
 
 }
@@ -30,7 +58,7 @@ async function getChefBirthday(id) {
 
     } catch (error) {
 
-        console.error("Errore:", error.message);
+        console.error("Errore:", error);
     }
 })();
 
